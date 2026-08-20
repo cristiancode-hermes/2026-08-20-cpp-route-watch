@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>route-watch</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #1e1e2e; font-family: 'Fira Code', monospace; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 40px 20px; }
+  .terminal {
+    background: #181825;
+    border-radius: 12px;
+    padding: 24px 32px;
+    color: #cdd6f4;
+    font-size: 13.5px;
+    line-height: 1.55;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    max-width: 920px;
+    width: 100%;
+  }
+  .cyan { color: #89dceb; }
+  .green { color: #a6e3a1; }
+  .yellow { color: #f9e2af; }
+  .red { color: #f38ba8; }
+  .dim { color: #6c7086; }
+  .magenta { color: #cba6f7; }
+  .blue { color: #89b4fa; }
+  .bold { font-weight: 600; }
+  .header-box { border: 2px solid #89dceb; border-radius: 8px; padding: 12px 20px; margin-bottom: 18px; }
+  .header-box .title { color: #89dceb; font-size: 15px; font-weight: 600; }
+  .header-box .sub { color: #6c7086; font-size: 12px; margin-top: 4px; }
+  .section-title { color: #cdd6f4; font-weight: 600; margin-top: 14px; margin-bottom: 8px; }
+  .agg-row { display: flex; gap: 24px; margin-bottom: 6px; flex-wrap: wrap; }
+  .agg-label { color: #6c7086; font-size: 11px; }
+  .agg-value { color: #cdd6f4; font-size: 15px; font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 12.5px; }
+  th { color: #6c7086; text-align: left; font-weight: 400; padding: 4px 6px; border-bottom: 1px solid #45475a; font-size: 11px; }
+  td { padding: 4px 6px; white-space: nowrap; }
+  .notes { margin-top: 14px; color: #6c7086; font-size: 11px; line-height: 1.5; }
+  .prompt { margin-top: 16px; color: #a6e3a1; font-size: 12px; }
+  .tag { font-size: 10px; padding: 1px 6px; border-radius: 4px; background: #313244; color: #a6e3a1; margin-left: 4px; }
+  .tag-host { color: #f9e2af; }
+  .tag-gw { color: #cba6f7; }
+</style>
+</head>
+<body>
+<div class="terminal">
+  <div class="header-box">
+    <div class="title">+================================================+</div>
+    <div class="title">|     Linux Routing Table Monitor               |</div>
+    <div class="title">+================================================+</div>
+    <div class="sub">Source: /proc/net/route + ipv6_route &nbsp;·&nbsp; Snapshot: 2026-08-20 05:06:55 &nbsp;·&nbsp; --demo</div>
+  </div>
+
+  <div class="section-title">-- Aggregate --</div>
+  <div class="agg-row">
+    <div>
+      <div class="agg-label">IPv4 routes</div>
+      <div class="agg-value cyan">7</div>
+    </div>
+    <div>
+      <div class="agg-label">IPv6 routes</div>
+      <div class="agg-value cyan">5</div>
+    </div>
+    <div>
+      <div class="agg-label">Default v4</div>
+      <div class="agg-value green">2</div>
+    </div>
+    <div>
+      <div class="agg-label">Default v6</div>
+      <div class="agg-value green">1</div>
+    </div>
+    <div>
+      <div class="agg-label">Via gateway</div>
+      <div class="agg-value magenta">3</div>
+    </div>
+    <div>
+      <div class="agg-label">Host routes</div>
+      <div class="agg-value blue">1</div>
+    </div>
+  </div>
+
+  <div class="section-title">-- IPv4 routes (7) --</div>
+  <table>
+    <tr>
+      <th>Iface</th><th>Destination</th><th>Gateway</th><th>Flg</th><th>Metric</th><th>Genmask</th><th>Notes</th>
+    </tr>
+    <tr>
+      <td class="green">eth0</td>
+      <td class="green bold">default</td>
+      <td>172.16.1.1</td>
+      <td class="yellow">UG</td>
+      <td>100</td>
+      <td class="dim">0.0.0.0</td>
+      <td><span class="tag">default</span><span class="tag tag-gw">via-gw</span></td>
+    </tr>
+    <tr>
+      <td class="cyan">eth0</td>
+      <td>172.16.1.0/24</td>
+      <td class="dim">*</td>
+      <td>U</td>
+      <td>0</td>
+      <td class="dim">255.255.255.0</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="cyan">docker0</td>
+      <td>172.17.0.0/16</td>
+      <td class="dim">*</td>
+      <td>U</td>
+      <td>0</td>
+      <td class="dim">255.255.0.0</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="cyan">br-lan</td>
+      <td>10.0.0.0/8</td>
+      <td class="dim">*</td>
+      <td>U</td>
+      <td>0</td>
+      <td class="dim">255.0.0.0</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="cyan">wg0</td>
+      <td>10.8.0.0/24</td>
+      <td class="dim">*</td>
+      <td>U</td>
+      <td>0</td>
+      <td class="dim">255.255.255.0</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="yellow">eth0</td>
+      <td>192.168.100.50/32</td>
+      <td class="dim">*</td>
+      <td class="yellow">UH</td>
+      <td>0</td>
+      <td class="dim">255.255.255.255</td>
+      <td><span class="tag tag-host">host</span></td>
+    </tr>
+    <tr>
+      <td class="green">tun0</td>
+      <td class="green bold">default</td>
+      <td>10.9.0.1</td>
+      <td class="yellow">UG</td>
+      <td>50</td>
+      <td class="dim">0.0.0.0</td>
+      <td><span class="tag">default</span><span class="tag tag-gw">via-gw</span></td>
+    </tr>
+  </table>
+
+  <div class="section-title">-- IPv6 routes (5) --</div>
+  <table>
+    <tr>
+      <th>Iface</th><th>Destination</th><th>Gateway</th><th>Flags</th><th>Metric</th><th>Notes</th>
+    </tr>
+    <tr>
+      <td class="green">eth0</td>
+      <td class="green bold">default</td>
+      <td>fe80::1</td>
+      <td class="yellow">UG</td>
+      <td>1024</td>
+      <td><span class="tag">default</span><span class="tag tag-gw">via-gw</span></td>
+    </tr>
+    <tr>
+      <td class="magenta">lo</td>
+      <td>::1/128</td>
+      <td class="dim">*</td>
+      <td>Ur</td>
+      <td>0</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="magenta">eth0</td>
+      <td>2001:db8:1::/64</td>
+      <td class="dim">*</td>
+      <td>UA</td>
+      <td>256</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="magenta">eth0</td>
+      <td>fe80::/64</td>
+      <td class="dim">*</td>
+      <td>UA</td>
+      <td>256</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="magenta">wg0</td>
+      <td>fd00:8::/48</td>
+      <td class="dim">*</td>
+      <td>U</td>
+      <td>100</td>
+      <td></td>
+    </tr>
+  </table>
+
+  <div class="notes">
+    Decodes /proc/net/route hex LE → dotted IPv4 · /proc/net/ipv6_route %pi6 network-order → compressed IPv6<br>
+    Flags: U=up G=gateway H=host · prefix from genmask · C++23 zero deps
+  </div>
+  <div class="prompt">$ ./route-watch --demo<span class="dim"> ▍</span></div>
+</div>
+</body>
+</html>

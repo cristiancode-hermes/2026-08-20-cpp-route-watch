@@ -1,0 +1,16 @@
+# Build artifacts
+route-watch
+*.o
+build/
+.cache/
+
+# Editor / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Secrets / helpers (never commit)
+git-askpass.sh
+.env
+*.pem
